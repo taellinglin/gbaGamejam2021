@@ -12,7 +12,9 @@
 #include "bn_affine_bg_ptr.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_random.h"
-
+#include "common_info.h"
+#include "bn_sprite_text_generator.h"
+#include "common_variable_8x16_sprite_font.h"
 //fe code
 #include "too_scene.h"
 
@@ -22,6 +24,9 @@
 #include "bn_regular_bg_items_loading_bg.h"
 #include "bn_regular_bg_items_lab_bg.h"
 #include "bn_regular_bg_items_loading_bg_other.h"
+#include "bn_regular_bg_items_background.h"
+#include "bn_regular_bg_items_midground.h"
+#include "bn_regular_bg_items_foreground.h"
 
 #include "bn_music_items.h"
 #include "bn_music_actions.h"
@@ -32,95 +37,61 @@ namespace too
 {
     void Loading::execute(Scene next_scene)
     {
+        bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
+
         bn::fixed_point init_pos = bn::fixed_point(0, 0);
 
-        if(next_scene == Scene::OTHER){
-            bn::music_items::crystal.play();
-        } else {
-            bn::music::set_volume(0.3);
-        }
+
+        bn::music::set_volume(0.3);
+        
         
         // player sprite
-        bn::sprite_ptr cat_sprite1 = bn::sprite_items::cat_sprite.create_sprite(init_pos.x(), init_pos.y()-50);
-        bn::sprite_ptr cat_sprite2 = bn::sprite_items::cat_sprite.create_sprite(init_pos.x(), init_pos.y()-25);
-        bn::sprite_ptr cat_sprite3 = bn::sprite_items::cat_sprite.create_sprite(init_pos.x(), init_pos.y()+25);
-        bn::sprite_ptr cat_sprite4 = bn::sprite_items::cat_sprite.create_sprite(init_pos.x(), init_pos.y()+50);
-        bn::sprite_ptr cat_sprite5 = bn::sprite_items::cat_sprite.create_sprite(init_pos.x(), init_pos.y());
+        bn::sprite_ptr cat_sprite1 = bn::sprite_items::cat_sprite.create_sprite(init_pos.x(), init_pos.y()+32);
         
         bn::sprite_animate_action<10> action1 = bn::create_sprite_animate_action_forever(
                         cat_sprite1, 2, bn::sprite_items::cat_sprite.tiles_item(), 8, 9,10,11, 2, 3, 4, 5, 6,7);
-        bn::sprite_animate_action<10> action2 = bn::create_sprite_animate_action_forever(
-                        cat_sprite2, 2, bn::sprite_items::cat_sprite.tiles_item(), 8, 9,10,11, 2, 3, 4, 5, 6,7);
-        bn::sprite_animate_action<10> action3 = bn::create_sprite_animate_action_forever(
-                        cat_sprite3, 2, bn::sprite_items::cat_sprite.tiles_item(), 8, 9,10,11, 2, 3, 4, 5, 6,7);
-        bn::sprite_animate_action<10> action4 = bn::create_sprite_animate_action_forever(
-                        cat_sprite4, 2, bn::sprite_items::cat_sprite.tiles_item(), 8, 9,10,11, 2, 3, 4, 5, 6,7);
-        bn::sprite_animate_action<10> action5 = bn::create_sprite_animate_action_forever(
-                        cat_sprite5, 2, bn::sprite_items::cat_sprite.tiles_item(), 8, 9,10,11, 2, 3, 4, 5, 6,7);
 
+        cat_sprite1.set_scale(0.5);
 
         bn::camera_ptr camera = bn::camera_ptr::create(init_pos.x()+100, init_pos.y());
 
         // map
-        bn::regular_bg_ptr map = bn::regular_bg_items::loading_bg.create_bg(512, 512);
+        bn::regular_bg_ptr background_bg = bn::regular_bg_items::background.create_bg(64, 32);
+        bn::regular_bg_ptr midground_bg = bn::regular_bg_items::midground.create_bg(64, 64);
+        bn::regular_bg_ptr foreground_bg = bn::regular_bg_items::foreground.create_bg(64, 64);
+        foreground_bg.set_priority(0);
         // map.set_horizontal_scale(2);
+        constexpr bn::string_view info_text_lines[] = {
+            "",
+            "",
+            "",
+            "",
+            "Loading...",
+            "",
+            "",
+            "",
+            "",
+        };
 
-        if(next_scene == Scene::OTHER){
-            cat_sprite1.set_position(200, init_pos.y()-50);
-            cat_sprite2.set_position(200, init_pos.y()+50);
-            cat_sprite3.set_position(200, init_pos.y()-25);
-            cat_sprite4.set_position(200, init_pos.y()+25);
-            cat_sprite5.set_position(200, init_pos.y());
-
-            action1 = bn::create_sprite_animate_action_forever(
-                        cat_sprite1, 4, bn::sprite_items::cat_sprite_other.tiles_item(), 7, 6,5,4, 3, 2, 11, 10, 9,8);
-            action2 = bn::create_sprite_animate_action_forever(
-                        cat_sprite2, 4, bn::sprite_items::cat_sprite_other.tiles_item(), 7, 6,5,4, 3, 2, 11, 10, 9,8);
-            action3 = bn::create_sprite_animate_action_forever(
-                        cat_sprite3, 4, bn::sprite_items::cat_sprite_other.tiles_item(), 7, 6,5,4, 3, 2, 11, 10, 9,8);
-            action4 = bn::create_sprite_animate_action_forever(
-                        cat_sprite4, 4, bn::sprite_items::cat_sprite_other.tiles_item(), 7, 6,5,4, 3, 2, 11, 10, 9,8);
-            action5 = bn::create_sprite_animate_action_forever(
-                        cat_sprite5, 4, bn::sprite_items::cat_sprite_other.tiles_item(), 7, 6,5,4, 3, 2, 11, 10, 9,8);
-
-            map = bn::regular_bg_items::loading_bg_other.create_bg(512, 512);
-        } else if(next_scene == Scene::LAB){
-            map = bn::regular_bg_items::lab_bg.create_bg(100 , 0);
-        } else if(next_scene == Scene::LAB_AFTER){
-            return;
-        }
+        common::info info("", info_text_lines, text_generator);
+        info.set_show_always(true);
 
 
         // camera
         cat_sprite1.set_camera(camera);
-        cat_sprite2.set_camera(camera);
-        cat_sprite3.set_camera(camera);
-        cat_sprite4.set_camera(camera);
-        cat_sprite5.set_camera(camera);
-        map.set_camera(camera);
+        /*
+        background_bg.set_camera(camera);
+        midground_bg.set_camera(camera);
+        foreground_bg.set_camera(camera);
+        */
 
         for(int i = 0; i < 160; ++i)
         {
-            if(next_scene != Scene::OTHER){
-                cat_sprite1.set_x(cat_sprite1.x() + 1.3);
-                cat_sprite2.set_x(cat_sprite2.x() + 2);
-                cat_sprite3.set_x(cat_sprite3.x() + 1.5);
-                cat_sprite4.set_x(cat_sprite4.x() + 2.2);
-                cat_sprite5.set_x(cat_sprite5.x() + 1.7);
-            } else {
-                cat_sprite1.set_x(cat_sprite1.x() - 1.3);
-                cat_sprite2.set_x(cat_sprite2.x() - 2);
-                cat_sprite3.set_x(cat_sprite3.x() - 1.5);
-                cat_sprite4.set_x(cat_sprite4.x() - 2.2);
-                cat_sprite5.set_x(cat_sprite5.x() - 1.7);
-            }
-            
-
+            foreground_bg.set_x(foreground_bg.x() - 1);
+            midground_bg.set_x(midground_bg.x() - 0.5);
+            info.update();
+            cat_sprite1.set_x(cat_sprite1.x() + 1.3);
             action1.update();
-            action2.update();
-            action3.update();
-            action4.update();
-            action5.update();
             bn::core::update();
         }
     }

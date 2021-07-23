@@ -95,6 +95,7 @@ namespace too
         _text_bg2(bn::sprite_items::text_bg.create_sprite(0, 0)),
         _skip(bn::sprite_items::skip.create_sprite(0, 0)),
         _healthbar(too::Healthbar(text_generator)),
+        _spellbar(too::Spellbar(text_generator)),
         _data(too::Data()),
         _tele_sprite(bn::sprite_items::cat_sprite.create_sprite(0, 0))
     {
@@ -108,6 +109,7 @@ namespace too
         
 
         _healthbar.set_visible(false);
+        _spellbar.set_visible(false);
 
         _text_bg1.set_scale(2);
         _text_bg1.set_bg_priority(0);
@@ -146,7 +148,8 @@ namespace too
         _enemies = &enemies;
         _map.value().set_visible(true);
         _sprite.set_visible(true);
-        _healthbar.set_visible(false);
+        _healthbar.set_visible(true);
+        _spellbar.set_visible(true);
         reset();
     }
 
@@ -205,6 +208,7 @@ namespace too
             if(_grounded && !_listening){
                 _dy-= jump_power;
                 _grounded = false;
+                bn::sound_items::jump.play();
             } else if(_can_teleport){
                 _tele_sprite.set_position(_pos);
                 _tele_sprite.set_visible(true);
@@ -277,6 +281,7 @@ namespace too
             {
                 if(!_invulnerable && _enemies.value()->at(i).hp() > 0 && _enemies.value()->at(i).type() != ENEMY_TYPE::RAT){
                     _invulnerable = true;
+                    bn::sound_items::hurt.play();
                     _healthbar.set_hp(_healthbar.hp() -5, _text_generator);
                     _dy -= 0.3;
                     if(_dx < 0){
@@ -290,16 +295,22 @@ namespace too
     }
 
     void Player::collide_with_objects(bn::affine_bg_ptr map, too::Level level){
-        // if falling
+
         if(_dy > 0){
+            
             //Maybe play some wind blowing...
             _falling = true;
             _grounded = false;
             _jumping = false;
             
+
             // clamp max fall speed
             if(_dy > max_dy){
                 _dy = max_dy;
+                
+                
+                
+                
 
             }
 
@@ -339,6 +350,7 @@ namespace too
     void Player::hide(){
         _tele_sprite.set_visible(false);
         _healthbar.set_visible(false);
+        _spellbar.set_visible(false);
         _sprite.set_visible(false);
     }
 
@@ -474,10 +486,40 @@ void Player::apply_animation_state(){
         {
             attack();
         } 
+        int spellswitch_cooldown = 10;
+         if(bn::keypad::l_pressed() && !_listening){
+                    BN_LOG("R[Hold] + up pressed");
+                    if( _spell_selected >0){
+                        bn::sound_items::cursor.play();
+                            _spell_selected--;
+                            _spellbar.set_current_spell_index(_spell_selected, _text_generator);
+                    }else{
+                        bn::sound_items::disabled.play();
+                    }
+                }
+                if(bn::keypad::r_pressed() && !_listening){
+                    BN_LOG("R[Hold] + down pressed");
+                    if( _spell_selected < 5){
+                        bn::sound_items::cursor.play();
+                        _spell_selected++;
+                        _spellbar.set_current_spell_index(_spell_selected, _text_generator);
+                    }else{
+                        bn::sound_items::disabled.play();
+                    }
+
+                }
+        else if(bn::keypad::r_released() && !_listening){
+            spellswitch_cooldown =100;
+        }
 
         // teleport
-        if(bn::keypad::l_pressed() && !_listening)
-        {
+        if(bn::keypad::r_pressed() && !_listening)
+        { 
+            if(_spell_selected == 5){
+                _can_teleport = true;
+            }else{
+                _can_teleport = false;
+            }
             if(_can_teleport){
                 // BN_LOG(_tele_sprite.position().x());
                 _tele_sprite.set_position(_pos);

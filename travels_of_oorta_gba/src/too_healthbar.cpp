@@ -19,13 +19,13 @@ namespace too
     Healthbar::Healthbar(bn::sprite_text_generator& text_generator)
     {
         button = bn::sprite_items::button_status.create_sprite_optional(x, y);
-        button->set_bg_priority(0);;
+        button->set_bg_priority(0);
         //bn::sprite_text_generator text_generator(variable_8x8_sprite_font);
         text_generator.set_left_alignment();
         text_generator.set_bg_priority(0);
         _hud_sprites.clear();
         BN_LOG("HP: ", too::_hp);
-        text_generator.generate(-78, -64, bn::format<10>("HP : {}", too::_hp), _hud_sprites);
+        text_generator.generate(-78, -64, bn::format<10>("Hp : {}", too::_hp), _hud_sprites);
     }
 
     int Healthbar::hp(){

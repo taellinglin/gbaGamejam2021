@@ -1,4 +1,4 @@
-#include "too_scene_limbo1.h"
+#include "too_scene_limbo2.h"
 
 //butano
 #include "bn_core.h"
@@ -31,7 +31,7 @@
 //assets
 #include "bn_sprite_items_cat_sprite.h"
 #include "bn_sprite_items_box.h"
-#include "bn_affine_bg_items_limbo1.h"
+#include "bn_affine_bg_items_limbo2.h"
 #include "bn_regular_bg_items_background.h"
 
 #include "bn_sprite_text_generator.h"
@@ -41,10 +41,10 @@
 
 namespace too
 {
-    Limbo1::Limbo1(Player& player)
+    Limbo2::Limbo2(Player& player)
     : _player(&player){}
 
-    Scene Limbo1::execute(bn::fixed_point spawn_location)
+    Scene Limbo2::execute(bn::fixed_point spawn_location)
     {
         bn::sprite_text_generator text_generator(variable_8x8_sprite_font);
 
@@ -59,7 +59,7 @@ namespace too
 
         // map
         bn::regular_bg_ptr map_bg = bn::regular_bg_items::background.create_bg(512, 512);
-        bn::affine_bg_ptr map = bn::affine_bg_items::limbo1.create_bg(512, 512);
+        bn::affine_bg_ptr map = bn::affine_bg_items::limbo2.create_bg(512, 512);
         map_bg.set_priority(2);
         map.set_priority(1);
         too::Level level = too::Level(map);

@@ -14,6 +14,7 @@
 #include "too_enemy.h"
 #include "too_data.h"
 #include "too_healthbar.h"
+#include "too_spellbar.h"
 
 #include "bn_sprite_items_cat_sprite.h"
 
@@ -32,6 +33,7 @@ namespace too
             bn::sprite_ptr _text_bg2;
             bn::sprite_ptr _skip;
             too::Healthbar _healthbar;
+            too::Spellbar _spellbar;
             bn::sprite_text_generator _text_generator;
 
             //used for state management
@@ -51,6 +53,8 @@ namespace too
             int _inv_timer = 0;
 
             bool _can_teleport = false;
+            int _spell_selected= 0;
+
 
             Data _data;
 

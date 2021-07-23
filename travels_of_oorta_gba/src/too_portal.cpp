@@ -11,6 +11,7 @@
 #include "bn_sprite_items_portal_town.h"
 #include "bn_sprite_items_portal_limbo.h"
 #include "bn_sprite_items_portal_summer.h"
+#include "bn_sprite_items_portal_spring.h"
 #include "bn_sprite_items_portal_autumn.h"
 #include "bn_sprite_items_portal_winter.h"
 #include "bn_sprite_items_portal_dawn.h"
@@ -32,8 +33,57 @@ namespace too
         {
             _sprite = bn::sprite_items::portal_town.create_sprite(_pos.x(), _pos.y());
             
-            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 120, bn::sprite_items::portal_town.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
-            _open = bn::sprite_animate_action<18>::forever(_sprite.value(), 120, bn::sprite_items::portal_town.tiles_item(),  bn::array<uint16_t,18>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22});
+            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_town.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
+            _open = bn::sprite_animate_action<18>::forever(_sprite.value(), 10, bn::sprite_items::portal_town.tiles_item(),  bn::array<uint16_t,18>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22});
+                
+        }else if(_type == PORTAL_TYPE::LIMBO_PORTAL)
+        {
+            _sprite = bn::sprite_items::portal_limbo.create_sprite(_pos.x(), _pos.y());
+            
+            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_limbo.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
+            _open = bn::sprite_animate_action<18>::forever(_sprite.value(), 10, bn::sprite_items::portal_limbo.tiles_item(),  bn::array<uint16_t,18>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22});
+                
+        }else if(_type == PORTAL_TYPE::SUMMER_PORTAL)
+        {
+            _sprite = bn::sprite_items::portal_summer.create_sprite(_pos.x(), _pos.y());
+            
+            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_summer.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
+            _open = bn::sprite_animate_action<18>::forever(_sprite.value(), 10, bn::sprite_items::portal_summer.tiles_item(),  bn::array<uint16_t,18>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22});
+                
+        }else if(_type == PORTAL_TYPE::AUTUMN_PORTAL)
+        {
+            _sprite = bn::sprite_items::portal_autumn.create_sprite(_pos.x(), _pos.y());
+            
+            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_autumn.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
+            _open = bn::sprite_animate_action<18>::forever(_sprite.value(), 10, bn::sprite_items::portal_autumn.tiles_item(),  bn::array<uint16_t,18>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22});
+                
+        }else if(_type == PORTAL_TYPE::WINTER_PORTAL)
+        {
+            _sprite = bn::sprite_items::portal_winter.create_sprite(_pos.x(), _pos.y());
+            
+            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_winter.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
+            _open = bn::sprite_animate_action<18>::forever(_sprite.value(), 10, bn::sprite_items::portal_winter.tiles_item(),  bn::array<uint16_t,18>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22});
+                
+        }else if(_type == PORTAL_TYPE::SPRING_PORTAL)
+        {
+            _sprite = bn::sprite_items::portal_spring.create_sprite(_pos.x(), _pos.y());
+            
+            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_spring.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
+            _open = bn::sprite_animate_action<18>::forever(_sprite.value(), 10, bn::sprite_items::portal_spring.tiles_item(),  bn::array<uint16_t,18>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22});
+                
+        }else if(_type == PORTAL_TYPE::DAWN_PORTAL)
+        {
+            _sprite = bn::sprite_items::portal_dawn.create_sprite(_pos.x(), _pos.y());
+            
+            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_dawn.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
+            _open = bn::sprite_animate_action<18>::forever(_sprite.value(), 10, bn::sprite_items::portal_dawn.tiles_item(),  bn::array<uint16_t,18>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22});
+                
+        }else if(_type == PORTAL_TYPE::DUSK_PORTAL)
+        {
+            _sprite = bn::sprite_items::portal_spring.create_sprite(_pos.x(), _pos.y());
+            
+            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_dusk.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
+            _open = bn::sprite_animate_action<18>::forever(_sprite.value(), 10, bn::sprite_items::portal_dusk.tiles_item(),  bn::array<uint16_t,18>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22});
                 
         }
         if(_sprite.has_value())

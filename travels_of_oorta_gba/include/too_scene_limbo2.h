@@ -1,5 +1,5 @@
-#ifndef TOO_SCENE_LIMBO1_H
-#define TOO_SCENE_LIMBO1_H
+#ifndef TOO_SCENE_LIMBO2_H
+#define TOO_SCENE_LIMBO2_H
 
 #include "too_scene.h"
 #include "too_player.h"
@@ -9,16 +9,18 @@
 
 namespace too
 {
-    class Limbo1
+    class Limbo2
     {       
         private:
             Player* _player;
-            bn::string_view portal_text[1] = {
-            "There are still monsters here!",
+            bn::string_view portal_text[3] = {
+            "This door is not open yet",
+            "Wait here and train while",
+            "we make the rest of the game!"
             };
             bn::string_view portal_title;
         public:
-            Limbo1(Player& player);
+            Limbo2(Player& player);
             Scene execute(bn::fixed_point spawn);
     };
 }
