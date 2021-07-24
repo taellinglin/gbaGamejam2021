@@ -38,6 +38,7 @@
 #include "variable_8x8_sprite_font.h"
 #include "bn_music_items.h"
 #include "bn_music_actions.h"
+#include "bn_sound_items.h"
 
 namespace too
 {
@@ -92,10 +93,18 @@ namespace too
         //StorySave to_limbo2 = StorySave(bn::fixed_point(944, 736), STORY_TYPE::BEGINNING, camera, text_generator);
         portal_title = "To Limbo 2";
         Portal to_limbo2 = Portal(bn::fixed_point(944, 736), camera, PORTAL_TYPE::LIMBO_PORTAL, text_generator, portal_text, portal_title, false);
-        //to_limbo2.set_open(false);
+        to_limbo2.set_open(true);
+        Tooltip explain_attack = Tooltip(bn::fixed_point(256,224),"Press B to attack.", text_generator);
 
         while(true)
         {
+            if(_player->hp() <= 0){
+                bn::sound_items::oorta_die.play();
+                _player->delete_data();
+                return Scene::DEATH;
+            }
+
+
             for(Enemy& enemy : enemies){
                 if(bn::abs(enemy.pos().x() - camera.x()) < 200 && bn::abs(enemy.pos().y() - camera.y()) < 100){
                     enemy.update(_player->pos());
@@ -107,12 +116,17 @@ namespace too
             if(to_limbo2.check_trigger(_player->pos()))
             {
                 if(bn::keypad::up_pressed()){
-                    _player->set_listening(true);
-                    to_limbo2.dialog();
+                    //_player->set_listening(true);
+                    //to_limbo2.dialog();
+                    return too::Scene::LIMBO2_LIMBO1;
                 }else if(!to_limbo2.is_in_dialog()){
                     _player->set_listening(false);
                 }
-            } else {
+            }else if (explain_attack.check_trigger(_player->pos())){
+                _player->set_listening(true);
+                explain_attack.update();
+            }
+            else {
                 _player->set_listening(false);
             }
             to_limbo2.update();

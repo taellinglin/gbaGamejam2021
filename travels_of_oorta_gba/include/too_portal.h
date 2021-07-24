@@ -21,7 +21,7 @@ namespace too
         bn::fixed_point _pos;
         bn::camera_ptr& _camera;
         bn::optional<bn::sprite_ptr> _sprite;
-        bn::optional<bn::sprite_animate_action<18>> _open;
+        bn::optional<bn::sprite_animate_action<17>> _open;
         bn::optional<bn::sprite_animate_action<5>> _closed;
         bool _is_open = false;
         bool _hidden = false;

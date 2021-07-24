@@ -31,10 +31,10 @@ namespace too
             };
             bn::vector<bn::sprite_ptr, 32> _spell_hud_sprites;
             //bn::sprite_text_generator& _text_generator;
-            int _current_spell_index;
-            bool _is_visible;
-            int _default_spell;
-            int num_spells;
+            int _current_spell_index =0;
+            bool _is_visible =false;
+            int _default_spell = 0;
+            int num_spells = 6;
 
         public:
             Spellbar(bn::sprite_text_generator& text_generator);

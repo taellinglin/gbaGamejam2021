@@ -23,6 +23,8 @@
 //assets
 #include "bn_sprite_items_rip.h"
 #include "bn_affine_bg_items_title.h"
+#include "bn_regular_bg_items_background.h"
+
 
 #include "bn_music_items.h"
 
@@ -38,14 +40,15 @@ namespace too
     Scene Death::execute()
     {
         // map
-        // bn::affine_bg_ptr map = bn::affine_bg_items::title.create_bg(0, 0);
+        bn::regular_bg_ptr map = bn::regular_bg_items::background.create_bg(64, 64);
         //reset player
 
-        bn::music_items::mystic.play();
+        bn::music_items::game_over.play();
 
         bn::sprite_text_generator text_generator(variable_8x8_sprite_font);
         _player->set_can_teleport(false);
         _player->set_hp(100);
+        _player->hide();
         bn::vector<bn::sprite_ptr, 32> text_sprites;
 
         bn::vector<bn::sprite_ptr, 32> text_sprites2;
@@ -53,7 +56,7 @@ namespace too
         text_generator.set_center_alignment();
 
 
-        text_generator.generate(0, 30, "Cats only have nine lives.", text_sprites);
+        text_generator.generate(0, 30, "Our Hero has fallen....", text_sprites);
 
 
         // player sprite
@@ -74,7 +77,7 @@ namespace too
             ++timer;
 
             if(timer > 180 && !text_made){
-                text_generator.generate(0, 70, "press any key", text_sprites2);
+                text_generator.generate(0, 70, "press any key to retry", text_sprites2);
                 text_made = true;
             }
             bn::core::update();

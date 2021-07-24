@@ -67,7 +67,7 @@ namespace too
             too::Hitbox _hitbox_right = Hitbox(8,0,8,16);
             too::Hitbox _hitbox_jump = Hitbox(0,8,16,8);
             bn::sprite_animate_action<10> _action = bn::create_sprite_animate_action_forever(
-                        _sprite, 30, bn::sprite_items::cat_sprite.tiles_item(), 0,1,0,1,0,1,0,1,0,1);
+                        _sprite, 10, bn::sprite_items::cat_sprite.tiles_item(), 0,1,0,1,0,1,0,1,0,1);
             bn::optional<bn::sprite_animate_action<4>> _spin_action;
             void _update_camera(int lerp);
             
@@ -76,6 +76,7 @@ namespace too
             Player(bn::sprite_ptr sprite, bn::sprite_text_generator& text_generator);
 
             void hide();
+            void show();
             Data data();
             
             [[nodiscard]] bn::fixed_point pos();

@@ -36,6 +36,14 @@
 #include "too_scene_lab.h"
 #include "too_scene_lab_after.h"
 #include "too_scene_limbo1.h"
+#include "too_scene_limbo2.h"
+#include "too_scene_limbo3.h"
+#include "too_scene_town1.h"
+#include "too_scene_summer1.h"
+#include "too_scene_summer2.h"
+
+
+
 #include "too_scene.h"
 
 #include "bn_sprite_items_cat_sprite.h"
@@ -45,22 +53,55 @@
 int main()
 {
     bn::core::init();
+    
     too::Scene scene = too::Scene::TITLE;
+    
     bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
-
     bn::sprite_ptr cat_sprite = bn::sprite_items::cat_sprite.create_sprite(0,0);
     cat_sprite.set_visible(false);
     too::Player player = too::Player(cat_sprite, text_generator);
-
+    player.set_hp(100);
+    
     while(true)
     {
+        if(scene != too::Scene::TITLE){
+            player.show();
+        }else{
+            player.hide();
+        }
         if(scene == too::Scene::HOUSE_START){
             too::House house = too::House(player);
             scene = house.execute(bn::fixed_point(293, 368));
         } 
         else if(scene == too::Scene::LIMBO1){
+            
             too::Limbo1 limbo1= too::Limbo1(player);
             scene = limbo1.execute(bn::fixed_point(112, 208));
+        } 
+        else if(scene == too::Scene::LIMBO2_LIMBO1){
+            
+            too::Limbo2 limbo2_limbo1= too::Limbo2(player);
+            scene = limbo2_limbo1.execute(bn::fixed_point(80, 912));
+        } 
+        else if(scene == too::Scene::LIMBO1_LIMBO2){
+            
+            too::Limbo1 limbo1_limbo2= too::Limbo1(player);
+            scene = limbo1_limbo2.execute(bn::fixed_point(944, 736));
+        } 
+        else if(scene == too::Scene::LIMBO3_LIMBO2){
+            
+            too::Limbo3 limbo3_limbo2= too::Limbo3(player);
+            scene = limbo3_limbo2.execute(bn::fixed_point(208, 224));
+        } 
+        else if(scene == too::Scene::TOWN1_LIMBO3){
+            
+            too::Town1 town1_limbo3= too::Town1(player);
+            scene = town1_limbo3.execute(bn::fixed_point(80, 976));
+        } 
+        else if(scene == too::Scene::LIMBO3_TOWN1){
+            
+            too::Limbo3 limbo3_town1= too::Limbo3(player);
+            scene = limbo3_town1.execute(bn::fixed_point(816, 368));
         } 
         else if(scene == too::Scene::HOUSE_SKY){
             too::Sky sky = too::Sky(player);

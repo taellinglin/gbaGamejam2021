@@ -23,8 +23,6 @@ namespace too
         const constexpr int y = -64;
         const constexpr int inc = 8;
         const constexpr int x = 100;
-        int _current_spell_index = 0;
-        int num_spells = 5;
 
     Spellbar::Spellbar(bn::sprite_text_generator& text_generator)
     {
@@ -40,13 +38,16 @@ namespace too
         text_generator.set_left_alignment();
         text_generator.set_bg_priority(0);
         _spell_hud_sprites.clear();
-        _current_spell_index = 0;
         for(int i = 0; i < num_spells; ++i){
             _all_spell_sprites[i].set_visible(false);
             _all_spell_sprites[i].set_bg_priority(0);
         }
-        _all_spell_sprites[_current_spell_index].set_visible(true);
-        BN_LOG("Spell: ", _current_spell_index);
+        BN_LOG("Cleared all Sprites...", num_spells);
+        //_all_spell_sprites[_current_spell_index].set_visible(true);
+        BN_LOG("-------------------");
+        BN_LOG("Spell ID: ", _current_spell_index);
+        BN_LOG("Spell Name: ", _all_spell_names[_current_spell_index]);
+        BN_LOG("-------------------");
         text_generator.generate(48, -64, bn::format<20>("{}", _all_spell_names[_current_spell_index]), _spell_hud_sprites);
     }
 
@@ -57,27 +58,32 @@ namespace too
     void Spellbar::set_current_spell_index(int spell_index, bn::sprite_text_generator& text_generator){
         _current_spell_index = spell_index;
         _spell_hud_sprites.clear();
-        BN_LOG("Spell Index(passed from player.cpp): ", spell_index);
-        BN_LOG("Current Spell Index(from spellbar.h_): ", _current_spell_index);
+        BN_LOG("------------------");
+        BN_LOG("Spell Changed!");
+        BN_LOG("+++++++++++");
+        BN_LOG("Spell ID: ", _current_spell_index);
+        BN_LOG("Spell Name: ", _all_spell_names[_current_spell_index]);
+        BN_LOG("-------------------");
         for(int i = 0; i < num_spells; ++i){
             _all_spell_sprites[i].set_visible(false);
             _all_spell_sprites[i].set_bg_priority(0);
             
         }
+        BN_LOG("Spell_Equipped: ", _all_spell_names[_current_spell_index]);
         _all_spell_sprites[_current_spell_index].set_visible(true);
-        _all_spell_sprites[_current_spell_index].set_bg_priority(0);
-        
-        
+        _all_spell_sprites[_current_spell_index].put_above();
         
 
-        text_generator.generate(48, -64, bn::format<20>("{}", _all_spell_names[spell_index]), _spell_hud_sprites);
+        text_generator.generate(48, -64, bn::format<20>("{}", _all_spell_names[_current_spell_index]), _spell_hud_sprites);
     }
 
     void Spellbar::set_visible(bool is_visible){
             for(int i=0; i < num_spells; i++){
-                _all_spell_sprites[i].set_visible(is_visible);
+                _all_spell_sprites[i].set_visible(false);
             }
-        
+            if(!is_visible){
+            _spell_hud_sprites.clear();
+            }
     }
 
 }

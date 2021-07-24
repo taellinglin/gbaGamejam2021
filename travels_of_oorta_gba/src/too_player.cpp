@@ -353,7 +353,12 @@ namespace too
         _spellbar.set_visible(false);
         _sprite.set_visible(false);
     }
-
+    void Player::show(){
+        _tele_sprite.set_visible(true);
+        _healthbar.set_visible(true);
+        _spellbar.set_visible(true);
+        _sprite.set_visible(true);
+    }
     void Player::move_right(){
         _sprite.set_horizontal_flip(false);
         _dx+= acc;
@@ -487,7 +492,20 @@ void Player::apply_animation_state(){
             attack();
         } 
         int spellswitch_cooldown = 10;
-         if(bn::keypad::l_pressed() && !_listening){
+        if (bn::keypad::r_held() && !_listening)
+        {
+            if (spellswitch_cooldown >= 0)
+            {
+                spellswitch_cooldown--;
+                BN_LOG("spellswitch_cooldown: ", spellswitch_cooldown);
+            }else{
+                spellswitch_cooldown = 0;
+            }
+        }else if(bn::keypad::r_released() && !_listening){
+            spellswitch_cooldown = 10;
+        }
+        
+         if(bn::keypad::up_pressed() && bn::keypad::r_held()  && !_listening){
                     BN_LOG("R[Hold] + up pressed");
                     if( _spell_selected >0){
                         bn::sound_items::cursor.play();
@@ -497,7 +515,7 @@ void Player::apply_animation_state(){
                         bn::sound_items::disabled.play();
                     }
                 }
-                if(bn::keypad::r_pressed() && !_listening){
+                if(bn::keypad::down_pressed() && bn::keypad::r_held() && !_listening){
                     BN_LOG("R[Hold] + down pressed");
                     if( _spell_selected < 5){
                         bn::sound_items::cursor.play();
@@ -508,19 +526,16 @@ void Player::apply_animation_state(){
                     }
 
                 }
-        else if(bn::keypad::r_released() && !_listening){
-            spellswitch_cooldown =100;
-        }
 
         // teleport
         if(bn::keypad::r_pressed() && !_listening)
         { 
             if(_spell_selected == 5){
-                _can_teleport = true;
+                set_can_teleport(true);
             }else{
-                _can_teleport = false;
+                set_can_teleport(false);
             }
-            if(_can_teleport){
+        if(_can_teleport){
                 // BN_LOG(_tele_sprite.position().x());
                 _tele_sprite.set_position(_pos);
                 _tele_sprite.set_visible(true);
@@ -544,7 +559,7 @@ void Player::apply_animation_state(){
                     _pos.set_x(_pos.x() - dist_to_wall);
                 }
             }
-        } 
+        }
         //_healthbar.update();
 
         check_attack();
