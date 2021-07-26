@@ -9,6 +9,7 @@
 #include "bn_sprite_text_generator.h"
 
 #include "bn_sprite_items_portal_town.h"
+/*
 #include "bn_sprite_items_portal_limbo.h"
 #include "bn_sprite_items_portal_summer.h"
 #include "bn_sprite_items_portal_spring.h"
@@ -16,6 +17,22 @@
 #include "bn_sprite_items_portal_winter.h"
 #include "bn_sprite_items_portal_dawn.h"
 #include "bn_sprite_items_portal_dusk.h"
+*/
+
+#include "bn_sprite_palette_items_portal_limbo_pal.h"
+#include "bn_sprite_palette_items_portal_town_pal.h"
+#include "bn_sprite_palette_items_portal_summer_pal.h"
+#include "bn_sprite_palette_items_portal_autumn_pal.h"
+#include "bn_sprite_palette_items_portal_winter_pal.h"
+#include "bn_sprite_palette_items_portal_spring_pal.h"
+#include "bn_sprite_palette_items_portal_dusk_pal.h"
+#include "bn_sprite_palette_items_portal_dawn_pal.h"
+
+//Palette Includes
+#include "bn_sprite_palette_actions.h"
+#include "bn_sprite_palettes_actions.h"
+#include "bn_bg_palette_color_hbe_ptr.h"
+#include "bn_bg_palettes_transparent_color_hbe_ptr.h"
 
 #include "variable_8x8_sprite_font.h"
 #include "bn_sprite_items_stone_plaque.h"
@@ -24,67 +41,57 @@
 namespace too
 {
 
-    Portal::Portal(bn::fixed_point pos, bn::camera_ptr& camera, PORTAL_TYPE type, bn::sprite_text_generator& text_generator, bn::span<bn::string_view> lines, bn::string_view tooltip, bool is_open) :
-        _pos(pos), _camera(camera), _type(type), _text_generator(text_generator), _lines(lines),_tooltip(tooltip), _is_open(is_open)
+    Portal::Portal(bn::fixed_point pos, bn::camera_ptr& camera, PORTAL_TYPE type, Scene scene, bn::sprite_text_generator& text_generator,  bn::span<bn::string_view> lines, bn::string_view tooltip, bool is_open) :
+        _pos(pos), _camera(camera), _type(type), _text_generator(text_generator), _lines(lines),_tooltip(tooltip), _is_open(is_open), _scene(scene)
     {
+        
+        _sprite = bn::sprite_items::portal_town.create_sprite(_pos.x(), _pos.y());
+        const bn::sprite_palette_item& palette_item = bn::sprite_items::portal_town.palette_item();
+        const bn::sprite_palette_item& portal_town_palette = bn::sprite_palette_items::portal_town_pal;
+        const bn::sprite_palette_item& portal_limbo_palette = bn::sprite_palette_items::portal_limbo_pal;
+        const bn::sprite_palette_item& portal_summer_palette = bn::sprite_palette_items::portal_summer_pal;
+        const bn::sprite_palette_item& portal_autumn_palette = bn::sprite_palette_items::portal_autumn_pal;
+        const bn::sprite_palette_item& portal_winter_palette = bn::sprite_palette_items::portal_winter_pal;
+        const bn::sprite_palette_item& portal_spring_palette = bn::sprite_palette_items::portal_spring_pal;
+        const bn::sprite_palette_item& portal_dusk_palette = bn::sprite_palette_items::portal_dusk_pal;
+        const bn::sprite_palette_item& portal_dawn_palette = bn::sprite_palette_items::portal_dawn_pal;
+        bn::sprite_palette_ptr portal_palette = _sprite->palette();
+        portal_palette.set_colors(portal_town_palette);
+        _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_town.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
+        _open = bn::sprite_animate_action<17>::forever(_sprite.value(), 10, bn::sprite_items::portal_town.tiles_item(),  bn::array<uint16_t,17>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21});
         _text_generator.set_bg_priority(0);
         
         if(_type == PORTAL_TYPE::TOWN_PORTAL)
         {
-            _sprite = bn::sprite_items::portal_town.create_sprite(_pos.x(), _pos.y());
-            
-            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_town.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
-            _open = bn::sprite_animate_action<17>::forever(_sprite.value(), 10, bn::sprite_items::portal_town.tiles_item(),  bn::array<uint16_t,17>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21});
-                
-        }else if(_type == PORTAL_TYPE::LIMBO_PORTAL)
+            portal_palette.set_colors(portal_town_palette);        
+        }
+        else if(_type == PORTAL_TYPE::LIMBO_PORTAL)
         {
-            _sprite = bn::sprite_items::portal_limbo.create_sprite(_pos.x(), _pos.y());
-            
-            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_limbo.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
-            _open = bn::sprite_animate_action<17>::forever(_sprite.value(), 10, bn::sprite_items::portal_limbo.tiles_item(),  bn::array<uint16_t,17>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21});
-                
-        }else if(_type == PORTAL_TYPE::SUMMER_PORTAL)
+            portal_palette.set_colors(portal_limbo_palette);
+        }
+        else if(_type == PORTAL_TYPE::SUMMER_PORTAL)
         {
-            _sprite = bn::sprite_items::portal_summer.create_sprite(_pos.x(), _pos.y());
-            
-            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_summer.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
-            _open = bn::sprite_animate_action<17>::forever(_sprite.value(), 10, bn::sprite_items::portal_summer.tiles_item(),  bn::array<uint16_t,17>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21});
-                
-        }else if(_type == PORTAL_TYPE::AUTUMN_PORTAL)
+            portal_palette.set_colors(portal_summer_palette);
+        }
+        else if(_type == PORTAL_TYPE::AUTUMN_PORTAL)
         {
-            _sprite = bn::sprite_items::portal_autumn.create_sprite(_pos.x(), _pos.y());
-            
-            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_autumn.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
-            _open = bn::sprite_animate_action<17>::forever(_sprite.value(), 10, bn::sprite_items::portal_autumn.tiles_item(),  bn::array<uint16_t,17>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21});
-                
-        }else if(_type == PORTAL_TYPE::WINTER_PORTAL)
+            portal_palette.set_colors(portal_autumn_palette);      
+        }
+        else if(_type == PORTAL_TYPE::WINTER_PORTAL)
         {
-            _sprite = bn::sprite_items::portal_winter.create_sprite(_pos.x(), _pos.y());
-            
-            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_winter.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
-            _open = bn::sprite_animate_action<17>::forever(_sprite.value(), 10, bn::sprite_items::portal_winter.tiles_item(),  bn::array<uint16_t,17>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21});
-                
-        }else if(_type == PORTAL_TYPE::SPRING_PORTAL)
+            portal_palette.set_colors(portal_winter_palette);
+        }
+        else if(_type == PORTAL_TYPE::SPRING_PORTAL)
         {
-            _sprite = bn::sprite_items::portal_spring.create_sprite(_pos.x(), _pos.y());
-            
-            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_spring.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
-            _open = bn::sprite_animate_action<17>::forever(_sprite.value(), 10, bn::sprite_items::portal_spring.tiles_item(),  bn::array<uint16_t,17>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21});
-                
-        }else if(_type == PORTAL_TYPE::DAWN_PORTAL)
+            portal_palette.set_colors(portal_spring_palette);
+        }
+        else if(_type == PORTAL_TYPE::DAWN_PORTAL)
         {
-            _sprite = bn::sprite_items::portal_dawn.create_sprite(_pos.x(), _pos.y());
-            
-            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_dawn.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
-            _open = bn::sprite_animate_action<17>::forever(_sprite.value(), 10, bn::sprite_items::portal_dawn.tiles_item(),  bn::array<uint16_t,17>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21});
-                
-        }else if(_type == PORTAL_TYPE::DUSK_PORTAL)
+            portal_palette.set_colors(portal_dawn_palette);
+        }
+        else if(_type == PORTAL_TYPE::DUSK_PORTAL)
         {
-            _sprite = bn::sprite_items::portal_spring.create_sprite(_pos.x(), _pos.y());
-            
-            _closed = bn::sprite_animate_action<5>::forever( _sprite.value(), 10, bn::sprite_items::portal_dusk.tiles_item(), bn::array<uint16_t,5>{0,1,2,3,4});
-            _open = bn::sprite_animate_action<17>::forever(_sprite.value(), 10, bn::sprite_items::portal_dusk.tiles_item(),  bn::array<uint16_t,17>{5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21});
-                
+            portal_palette.set_colors(portal_dusk_palette);
         }
         if(_sprite.has_value())
         {
@@ -93,7 +100,7 @@ namespace too
             _sprite.value().set_z_order(2);
         }
     }
-    
+   
     void Portal::update(){
         if (_is_open){
             if(_open.has_value()){
@@ -198,12 +205,29 @@ namespace too
         return _hidden;
     }
 
-    void Portal::set_open(bool is_open){
+    void Portal::set_is_open(bool is_open){
         _is_open = is_open;
     }
 
-    bool Portal::get_open(){
+    bool Portal::get_is_open(){
         return _is_open;
+    }
+    Scene Portal::goto_scene(){
+        return _scene;
+    }
+    void Portal::set_scene(Scene& scene){
+        _scene = scene;
+    }
+    void Portal::reset(){
+        if(_sprite.has_value()){
+            _sprite.reset();
+        }
+        if(_open.has_value()){
+            _open.reset();
+        }
+        if(_closed.has_value()){
+            _closed.reset();
+        }
     }
 
 

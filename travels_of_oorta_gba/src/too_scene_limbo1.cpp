@@ -92,8 +92,10 @@ namespace too
         
         //StorySave to_limbo2 = StorySave(bn::fixed_point(944, 736), STORY_TYPE::BEGINNING, camera, text_generator);
         portal_title = "To Limbo 2";
-        Portal to_limbo2 = Portal(bn::fixed_point(944, 736), camera, PORTAL_TYPE::LIMBO_PORTAL, text_generator, portal_text, portal_title, false);
-        to_limbo2.set_open(true);
+        
+        bn::vector<Portal, 1> portals = {};
+        portals.push_back(Portal(bn::fixed_point(944, 736), camera, PORTAL_TYPE::LIMBO_PORTAL, too::Scene::LIMBO2_LIMBO1, text_generator, portal_text, portal_title, true));
+
         Tooltip explain_attack = Tooltip(bn::fixed_point(256,224),"Press B to attack.", text_generator);
 
         while(true)
@@ -113,23 +115,21 @@ namespace too
                 }
             }
 
-            if(to_limbo2.check_trigger(_player->pos()))
-            {
-                if(bn::keypad::up_pressed()){
-                    //_player->set_listening(true);
-                    //to_limbo2.dialog();
-                    return too::Scene::LIMBO2_LIMBO1;
-                }else if(!to_limbo2.is_in_dialog()){
-                    _player->set_listening(false);
+           for(Portal& portal : portals){
+                if(portal.check_trigger(_player->pos())){
+                    if(bn::keypad::up_pressed()){
+                        if(portal.get_is_open()){
+                            return portal.goto_scene();
+                        }else{
+                            _player->set_listening(true);
+                            portal.dialog();
+                        }
+                    }else if(!portal.is_in_dialog()){
+                        _player->set_listening(false);
+                    }
                 }
-            }else if (explain_attack.check_trigger(_player->pos())){
-                _player->set_listening(true);
-                explain_attack.update();
+                portal.update();
             }
-            else {
-                _player->set_listening(false);
-            }
-            to_limbo2.update();
             // max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());
             // --counter;
             // if(! counter)

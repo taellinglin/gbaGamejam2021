@@ -10,6 +10,7 @@
 #include "bn_display.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_sprite_text_generator.h"
+#include "too_scene.h"
 
 #include "too_portal_type.h"
 namespace too
@@ -17,6 +18,7 @@ namespace too
     class Portal
     {
     private:
+        Scene _scene;
         PORTAL_TYPE _type;
         bn::fixed_point _pos;
         bn::camera_ptr& _camera;
@@ -42,16 +44,19 @@ namespace too
         bn::string_view _currentChars = "";
 
     public:
-        Portal(bn::fixed_point pos, bn::camera_ptr& camera, PORTAL_TYPE type, bn::sprite_text_generator& text_generator, bn::span<bn::string_view> lines, bn::string_view tooltip, bool is_open);
+        Portal(bn::fixed_point pos, bn::camera_ptr& camera, PORTAL_TYPE type, Scene scene, bn::sprite_text_generator& text_generator, bn::span<bn::string_view> lines, bn::string_view tooltip, bool is_open);
         void update();
         bool check_trigger(bn::fixed_point player_pos);
          bool is_in_dialog();
         void dialog();
         bool finished_dialog();
-        void set_open(bool is_open);
-        bool get_open();
+        void set_is_open(bool is_open);
+        bool get_is_open();
+        Scene goto_scene();
+        void set_scene(Scene& scene);
         void set_is_hidden(bool is_hidden);
         bool hidden();
+        void reset();
     };
     
     

@@ -60,43 +60,28 @@ namespace too
         map.set_camera(camera);
        // map_bg.set_camera(camera);
         
-        //Open Portals
-        Portal to_limbo3 = Portal(bn::fixed_point(80, 976), camera, PORTAL_TYPE::LIMBO_PORTAL, text_generator, portal_text_limbo, portal_title_limbo, true);
-        to_limbo3.set_open(true);
-
-        //Closed Portals
-        Portal to_summer1 = Portal(bn::fixed_point(880,672), camera, PORTAL_TYPE::SUMMER_PORTAL, text_generator, portal_text_summer, portal_title_summer, false);
-        to_summer1.set_open(false);
-        /*
-         Portal to_autumn1 = Portal(bn::fixed_point(64,512), camera, PORTAL_TYPE::AUTUMN_PORTAL, text_generator, portal_text_autumn, portal_title_autumn, false);
-        to_autumn1.set_open(false);
-
-         Portal to_winter1 = Portal(bn::fixed_point(320,336), camera, PORTAL_TYPE::WINTER_PORTAL, text_generator, portal_text_winter, portal_title_winter, false);
-        to_winter1.set_open(false);
-
-        Portal to_spring1 = Portal(bn::fixed_point(748,416), camera, PORTAL_TYPE::SPRING_PORTAL, text_generator, portal_text_spring, portal_title_spring, false);
-        to_spring1.set_open(false);
-        */
-/*
-        Portal to_dusk1 = Portal(bn::fixed_point(64,160), camera, PORTAL_TYPE::DUSK_PORTAL, text_generator, portal_text_dusk, portal_title_dusk, false);
-        to_dusk1.set_open(false);
-
-        Portal to_dawn1 = Portal(bn::fixed_point(64,160), camera, PORTAL_TYPE::DAWN_PORTAL, text_generator, portal_text_dawn, portal_title_dawn, false);
-        to_dawn1.set_open(false);
-*/
+        bn::vector<Portal, 7> portals = {};
+        portals.push_back(Portal(bn::fixed_point(80, 976), camera, PORTAL_TYPE::LIMBO_PORTAL,  too::Scene::LIMBO3_TOWN1, text_generator, portal_text_limbo, portal_title_limbo, true));
+        //portals.push_back(Portal(bn::fixed_point(880, 627), camera, PORTAL_TYPE::SUMMER_PORTAL, too::Scene::SUMMER1_TOWN1, text_generator, portal_text_summer, portal_title_summer, false));
+        portals.push_back(Portal(bn::fixed_point(64, 512), camera, PORTAL_TYPE::AUTUMN_PORTAL, too::Scene::AUTUMN1_TOWN1, text_generator, portal_text_autumn, portal_title_autumn, false));
+        //portals.push_back(Portal(bn::fixed_point(320, 336), camera, PORTAL_TYPE::WINTER_PORTAL,  too::Scene::WINTER1_TOWN1,text_generator, portal_text_winter, portal_title_winter, false));
+        //portals.push_back(Portal(bn::fixed_point(748, 416), camera, PORTAL_TYPE::SPRING_PORTAL, too::Scene::SPRING1_TOWN1, text_generator, portal_text_spring, portal_title_spring, false));
+        //portals.push_back(Portal(bn::fixed_point(64, 160), camera, PORTAL_TYPE::DUSK_PORTAL, too::Scene::DUSK1_TOWN1, text_generator, portal_text_dusk, portal_title_dusk, false));
+        //portals.push_back(Portal(bn::fixed_point(960, 160), camera, PORTAL_TYPE::DAWN_PORTAL, too::Scene::DAWN1_TOWN1, text_generator, portal_text_dawn, portal_title_dawn, false));
+        
         //NPC
-        /*
-        NPC frog = NPC(bn::fixed_point(932,957), camera, NPC_TYPE::FROG, text_generator);
-        Tooltip explain_attack = Tooltip(bn::fixed_point(932, 957),"Talk::Gero the Frog", text_generator);
-        */
+        
+        too::NPC frog = NPC(bn::fixed_point(932,957), camera, NPC_TYPE::FROG, text_generator);
+        too::Tooltip talk_to_frog = Tooltip(bn::fixed_point(932, 957),"Talk::Gero the Frog", text_generator);
+
         //No Enemies
         bn::vector<Enemy, 16> enemies = {};
 
         // player
         _player->spawn(spawn_location, camera, map, enemies);
+
         while(true)
         {
-            /*
             if(frog.check_trigger(_player->pos()))
             {
                 if(bn::keypad::up_pressed()){
@@ -108,109 +93,31 @@ namespace too
             } else{
                 _player->set_listening(false);
             }
+            
+            for(Portal& portal : portals){
+                if(portal.check_trigger(_player->pos())){
+                    if(bn::keypad::up_pressed()){
+                        if(portal.get_is_open()){
+                            return portal.goto_scene();
+                        }else{
+                            _player->set_listening(true);
+                            portal.dialog();
+                        }
+                    }else if(!portal.is_in_dialog()){
+                        _player->set_listening(false);
+                    }
+                }
+                portal.update();
+            }
+            
+           
+
         
-            */
-            if(to_limbo3.check_trigger(_player->pos()))
-            {
-                if(bn::keypad::up_pressed()){
-                    return Scene::LIMBO3_TOWN1;
-                }else if(!to_limbo3.is_in_dialog()){
-                    _player->set_listening(false);
-                }else{
-                _player->set_listening(false);
-                }
-            }
-            
-            if(to_summer1.check_trigger(_player->pos()))
-            {
-                if(bn::keypad::up_pressed()){
-                    _player->set_listening(true);
-                    to_summer1.dialog();
-                }else if(!to_summer1.is_in_dialog()){
-                    _player->set_listening(false);
-                }else{
-                    _player->set_listening(false);
-                }
-            }
-          /*  
-            if(to_autumn1.check_trigger(_player->pos()))
-            {
-                if(bn::keypad::up_pressed()){
-                    _player->set_listening(true);
-                    to_autumn1.dialog();
-                }else if(!to_autumn1.is_in_dialog()){
-                    _player->set_listening(false);
-                }
-                else {
-                _player->set_listening(false);
-                }
-            }
-            
-            if(to_winter1.check_trigger(_player->pos()))
-            {
-                if(bn::keypad::up_pressed()){
-                    _player->set_listening(true);
-                    to_winter1.dialog();
-                }else if(!to_winter1.is_in_dialog()){
-                    _player->set_listening(false);
-                }else {
-                    _player->set_listening(false);
-                }
-            }
-            
-            if(to_spring1.check_trigger(_player->pos()))
-            {
-                if(bn::keypad::up_pressed()){
-                    _player->set_listening(true);
-                    to_spring1.dialog();
-                }else if(!to_spring1.is_in_dialog()){
-                    _player->set_listening(false);
-                }else{
-                    _player->set_listening(false);
-                }
-            }
-
-            */
-            /*
-            if(to_dusk1.check_trigger(_player->pos()))
-            {
-                if(bn::keypad::up_pressed()){
-                    _player->set_listening(true);
-                    to_dusk1.dialog();
-                }else if(!to_dusk1.is_in_dialog()){
-                    _player->set_listening(false);
-                }else{
-                    _player->set_listening(false);
-                }
-            }
-            
-            if(to_dawn1.check_trigger(_player->pos()))
-            {
-                if(bn::keypad::up_pressed()){
-                    _player->set_listening(true);
-                    to_dawn1.dialog();
-                }else if(!to_dawn1.is_in_dialog()){
-                    _player->set_listening(false);
-                }else{
-                _player->set_listening(false);
-                }
-            }
-            */
-            to_limbo3.update();
-
-            to_summer1.update();
-            //to_autumn1.update();
-            //to_winter1.update();
-            //to_spring1.update();
-            /*
-            to_dusk1.update();
-            to_dawn1.update();
-            */
-           /*
             frog.update();
-            */
-            //explain_attack.update();
+            talk_to_frog.update();
+            
 
+            //Moving Elements
             //elevator.update_position();
             _player->update_position(map,level);
             _player->apply_animation_state();

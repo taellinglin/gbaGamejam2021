@@ -14,6 +14,7 @@
 #include "bn_regular_bg_ptr.h"
 #include "bn_camera_actions.h"
 #include "bn_sprite_animate_actions.h"
+#include "bn_optional.h"
 
 #include "bn_string_view.h"
 #include "bn_vector.h"
@@ -55,7 +56,6 @@ int main()
     bn::core::init();
     
     too::Scene scene = too::Scene::TITLE;
-    
     bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
     bn::sprite_ptr cat_sprite = bn::sprite_items::cat_sprite.create_sprite(0,0);
     cat_sprite.set_visible(false);

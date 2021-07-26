@@ -15,6 +15,7 @@
 #include "bn_span.h"
 #include "bn_affine_bg_map_cell.h"
 #include "bn_math.h"
+#include "bn_vector.h"
 
 
 //fe code
@@ -86,11 +87,10 @@ namespace too
         //StorySave to_limbo2 = StorySave(bn::fixed_point(944, 736), STORY_TYPE::BEGINNING, camera, text_generator);
         portal_title_1 = "To Limbo 1";
         portal_title_2 = "To Limbo 3";
-        Portal to_limbo1 = Portal(bn::fixed_point(80, 912), camera, PORTAL_TYPE::LIMBO_PORTAL, text_generator, portal_text, portal_title_1, false);
-        Portal to_limbo3 = Portal(bn::fixed_point(960, 194), camera, PORTAL_TYPE::LIMBO_PORTAL, text_generator, portal_text, portal_title_2, false);
 
-        to_limbo1.set_open(true);
-        to_limbo3.set_open(false);
+        bn::vector<Portal, 2> portals = {};
+        portals.push_back(Portal(bn::fixed_point(80, 912), camera, PORTAL_TYPE::LIMBO_PORTAL, Scene::LIMBO1_LIMBO2, text_generator, portal_text, portal_title_1, true));
+        portals.push_back(Portal(bn::fixed_point(960, 194), camera, PORTAL_TYPE::LIMBO_PORTAL, Scene::LIMBO3_LIMBO2, text_generator, portal_text, portal_title_2, true));
 
         while(true)
         {
@@ -107,29 +107,22 @@ namespace too
                 }
             }
             
-            if(to_limbo1.check_trigger(_player->pos()))
-            {
-                if(bn::keypad::up_pressed()){
-                    _player->set_listening(true);
-                    return too::Scene::LIMBO1_LIMBO2;
-                }else if(!to_limbo1.is_in_dialog()){
-                    _player->set_listening(false);
+            for(Portal& portal : portals){
+                if(portal.check_trigger(_player->pos())){
+                    if(bn::keypad::up_pressed()){
+                        if(portal.get_is_open()){
+                            return portal.goto_scene();
+                        }else{
+                            _player->set_listening(true);
+                            portal.dialog();
+                        }
+                    }else if(!portal.is_in_dialog()){
+                        _player->set_listening(false);
+                    }
                 }
-            } else if(to_limbo3.check_trigger(_player->pos()))
-            {
-                if(bn::keypad::up_pressed()){
-                    //_player->set_listening(true);
-                    //to_limbo3.dialog();
-                    return too::Scene::LIMBO3_LIMBO2;
-                    
-                }else if(!to_limbo3.is_in_dialog()){
-                    _player->set_listening(false);
-                }
-            } else {
-                _player->set_listening(false);
+                portal.update();
             }
-            to_limbo1.update();
-            to_limbo3.update();
+        
             // max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());
             // --counter;
             // if(! counter)

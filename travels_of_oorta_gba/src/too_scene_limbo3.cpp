@@ -83,11 +83,10 @@ namespace too
         //StorySave to_limbo2 = StorySave(bn::fixed_point(944, 736), STORY_TYPE::BEGINNING, camera, text_generator);
 
         //Portals
-        Portal to_limbo2 = Portal(bn::fixed_point(208, 224), camera, PORTAL_TYPE::LIMBO_PORTAL, text_generator, portal_text, portal_title_limbo2, true);
-        Portal to_town1 = Portal(bn::fixed_point(816, 368), camera, PORTAL_TYPE::TOWN_PORTAL, text_generator, portal_text, portal_title_town, true);
 
-        to_limbo2.set_open(true);
-        to_town1.set_open(true);
+        bn::vector<Portal, 2> portals = {};
+        portals.push_back(Portal(bn::fixed_point(208, 224), camera, PORTAL_TYPE::LIMBO_PORTAL, Scene::LIMBO2_LIMBO3, text_generator, portal_text, portal_title_limbo2, true));
+        portals.push_back(Portal(bn::fixed_point(816, 368), camera, PORTAL_TYPE::TOWN_PORTAL, Scene::TOWN1_LIMBO3, text_generator, portal_text, portal_title_town, true));
 
         while(true)
         {
@@ -105,28 +104,22 @@ namespace too
                 }
             }
             
-            if(to_limbo2.check_trigger(_player->pos()))
-            {
-                if(bn::keypad::up_pressed()){
-                    _player->set_listening(true);
-                    return too::Scene::LIMBO2_LIMBO1;
-                }else if(!to_limbo2.is_in_dialog()){
-                    _player->set_listening(false);
+            for(Portal& portal : portals){
+                if(portal.check_trigger(_player->pos())){
+                    if(bn::keypad::up_pressed()){
+                        if(portal.get_is_open()){
+                            return portal.goto_scene();
+                        }else{
+                            _player->set_listening(true);
+                            portal.dialog();
+                        }
+                    }else if(!portal.is_in_dialog()){
+                        _player->set_listening(false);
+                    }
                 }
-            } else if(to_town1.check_trigger(_player->pos()))
-            {
-                if(bn::keypad::up_pressed()){
-                    return Scene::TOWN1_LIMBO3;
-                    //_player->set_listening(true);
-                    //to_town.dialog();
-                }else if(!to_town1.is_in_dialog()){
-                    _player->set_listening(false);
-                }
-            } else {
-                _player->set_listening(false);
+                portal.update();
             }
-            to_limbo2.update();
-            to_town1.update();
+            
             _player->update_position(map,level);
             _player->apply_animation_state();
 
