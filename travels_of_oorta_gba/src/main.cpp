@@ -15,6 +15,8 @@
 #include "bn_camera_actions.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_optional.h"
+//#include "bn_unique_ptr.h"
+#include "bn_memory.h"
 
 #include "bn_string_view.h"
 #include "bn_vector.h"
@@ -70,38 +72,38 @@ int main()
             player.hide();
         }
         if(scene == too::Scene::HOUSE_START){
-            too::House house = too::House(player);
-            scene = house.execute(bn::fixed_point(293, 368));
+            bn::unique_ptr<too::House> house(new too::House(player));
+            scene = house->execute(bn::fixed_point(293, 368));
         } 
         else if(scene == too::Scene::LIMBO1){
             
-            too::Limbo1 limbo1= too::Limbo1(player);
-            scene = limbo1.execute(bn::fixed_point(112, 208));
+            bn::unique_ptr<too::Limbo1> limbo1(new too::Limbo1(player));
+            scene = limbo1->execute(bn::fixed_point(112, 208));
         } 
         else if(scene == too::Scene::LIMBO2_LIMBO1){
             
-            too::Limbo2 limbo2_limbo1= too::Limbo2(player);
-            scene = limbo2_limbo1.execute(bn::fixed_point(80, 912));
+            bn::unique_ptr<too::Limbo2> limbo2_limbo1(new too::Limbo2(player));
+            scene = limbo2_limbo1->execute(bn::fixed_point(80, 912));
         } 
         else if(scene == too::Scene::LIMBO1_LIMBO2){
             
-            too::Limbo1 limbo1_limbo2= too::Limbo1(player);
-            scene = limbo1_limbo2.execute(bn::fixed_point(944, 736));
+            bn::unique_ptr<too::Limbo1> limbo1_limbo2(new too::Limbo1(player));
+            scene = limbo1_limbo2->execute(bn::fixed_point(944, 736));
         } 
         else if(scene == too::Scene::LIMBO3_LIMBO2){
             
-            too::Limbo3 limbo3_limbo2= too::Limbo3(player);
-            scene = limbo3_limbo2.execute(bn::fixed_point(208, 224));
+            bn::unique_ptr<too::Limbo3> limbo3_limbo2(new too::Limbo3(player));
+            scene = limbo3_limbo2->execute(bn::fixed_point(208, 224));
         } 
         else if(scene == too::Scene::TOWN1_LIMBO3){
             
-            too::Town1 town1_limbo3= too::Town1(player);
-            scene = town1_limbo3.execute(bn::fixed_point(80, 976));
+            bn::unique_ptr<too::Town1> town1_limbo3(new too::Town1(player));
+            scene = town1_limbo3->execute(bn::fixed_point(80, 976));
         } 
         else if(scene == too::Scene::LIMBO3_TOWN1){
             
-            too::Limbo3 limbo3_town1= too::Limbo3(player);
-            scene = limbo3_town1.execute(bn::fixed_point(816, 368));
+            bn::unique_ptr<too::Limbo3> limbo3_town1(new too::Limbo3(player));
+            scene = limbo3_town1->execute(bn::fixed_point(816, 368));
         } 
         else if(scene == too::Scene::HOUSE_SKY){
             too::Sky sky = too::Sky(player);
@@ -129,8 +131,8 @@ int main()
         }
         else if(scene == too::Scene::TITLE)
         {
-            too::Title title = too::Title();
-            scene = title.execute();
+            bn::unique_ptr<too::Title> title(new too::Title());
+            scene = title->execute();
         }
         else if(scene == too::Scene::BUTANO)
         {
@@ -160,8 +162,8 @@ int main()
         }
         else if(scene == too::Scene::DEATH)
         {
-            too::Death death = too::Death(player);
-            scene = death.execute();
+            too::Death* death = new too::Death(player);
+            scene = death->execute();
         }
         else if(scene == too::Scene::LAB)
         {
@@ -176,8 +178,8 @@ int main()
         player.delete_data();
         player.hide();
         if(scene != too::Scene::DEATH && scene != too::Scene::BUTANO && scene != too::Scene::TITLE){
-            too::Loading loading = too::Loading();
-            loading.execute(scene);
+            too::Loading* loading = new too::Loading();
+            loading->execute(scene);
         }
         bn::core::update();
         

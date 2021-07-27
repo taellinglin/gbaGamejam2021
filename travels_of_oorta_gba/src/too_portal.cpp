@@ -213,6 +213,7 @@ namespace too
         return _is_open;
     }
     Scene Portal::goto_scene(){
+        reset();
         return _scene;
     }
     void Portal::set_scene(Scene& scene){

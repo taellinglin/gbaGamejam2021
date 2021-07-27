@@ -60,14 +60,14 @@ namespace too
         map.set_camera(camera);
        // map_bg.set_camera(camera);
         
-        bn::vector<Portal, 7> portals = {};
-        portals.push_back(Portal(bn::fixed_point(80, 976), camera, PORTAL_TYPE::LIMBO_PORTAL,  too::Scene::LIMBO3_TOWN1, text_generator, portal_text_limbo, portal_title_limbo, true));
-        //portals.push_back(Portal(bn::fixed_point(880, 627), camera, PORTAL_TYPE::SUMMER_PORTAL, too::Scene::SUMMER1_TOWN1, text_generator, portal_text_summer, portal_title_summer, false));
-        portals.push_back(Portal(bn::fixed_point(64, 512), camera, PORTAL_TYPE::AUTUMN_PORTAL, too::Scene::AUTUMN1_TOWN1, text_generator, portal_text_autumn, portal_title_autumn, false));
-        //portals.push_back(Portal(bn::fixed_point(320, 336), camera, PORTAL_TYPE::WINTER_PORTAL,  too::Scene::WINTER1_TOWN1,text_generator, portal_text_winter, portal_title_winter, false));
-        //portals.push_back(Portal(bn::fixed_point(748, 416), camera, PORTAL_TYPE::SPRING_PORTAL, too::Scene::SPRING1_TOWN1, text_generator, portal_text_spring, portal_title_spring, false));
-        //portals.push_back(Portal(bn::fixed_point(64, 160), camera, PORTAL_TYPE::DUSK_PORTAL, too::Scene::DUSK1_TOWN1, text_generator, portal_text_dusk, portal_title_dusk, false));
-        //portals.push_back(Portal(bn::fixed_point(960, 160), camera, PORTAL_TYPE::DAWN_PORTAL, too::Scene::DAWN1_TOWN1, text_generator, portal_text_dawn, portal_title_dawn, false));
+        bn::vector<bn::unique_ptr<Portal>>, 5> portals = {};
+        portals.push_back(new Portal(bn::fixed_point(80, 976), camera, PORTAL_TYPE::LIMBO_PORTAL,  too::Scene::LIMBO3_TOWN1, text_generator, portal_text_limbo, portal_title_limbo, true));
+        portals.push_back(new Portal(bn::fixed_point(880, 672), camera, PORTAL_TYPE::SUMMER_PORTAL, too::Scene::SUMMER1_TOWN1, text_generator, portal_text_summer, portal_title_summer, false));
+        portals.push_back(new Portal(bn::fixed_point(64, 512), camera, PORTAL_TYPE::AUTUMN_PORTAL, too::Scene::AUTUMN1_TOWN1, text_generator, portal_text_autumn, portal_title_autumn, false));
+        portals.push_back(new Portal(bn::fixed_point(320, 336), camera, PORTAL_TYPE::WINTER_PORTAL,  too::Scene::WINTER1_TOWN1,text_generator, portal_text_winter, portal_title_winter, false));
+        portals.push_back(new Portal(bn::fixed_point(748, 416), camera, PORTAL_TYPE::SPRING_PORTAL, too::Scene::SPRING1_TOWN1, text_generator, portal_text_spring, portal_title_spring, false));
+        //portals.push_back(new Portal(bn::fixed_point(64, 160), camera, PORTAL_TYPE::DUSK_PORTAL, too::Scene::DUSK1_TOWN1, text_generator, portal_text_dusk, portal_title_dusk, false));
+        //portals.push_back(new Portal(bn::fixed_point(960, 160), camera, PORTAL_TYPE::DAWN_PORTAL, too::Scene::DAWN1_TOWN1, text_generator, portal_text_dawn, portal_title_dawn, false));
         
         //NPC
         
@@ -94,20 +94,20 @@ namespace too
                 _player->set_listening(false);
             }
             
-            for(Portal& portal : portals){
-                if(portal.check_trigger(_player->pos())){
+            for(Portal* portal : portals){
+                if(portal->check_trigger(_player->pos())){
                     if(bn::keypad::up_pressed()){
-                        if(portal.get_is_open()){
-                            return portal.goto_scene();
+                        if(portal->get_is_open()){
+                            return portal->goto_scene();
                         }else{
                             _player->set_listening(true);
-                            portal.dialog();
+                            portal->dialog();
                         }
-                    }else if(!portal.is_in_dialog()){
+                    }else if(!portal->is_in_dialog()){
                         _player->set_listening(false);
                     }
                 }
-                portal.update();
+                portal->update();
             }
             
            

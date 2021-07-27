@@ -93,8 +93,8 @@ namespace too
         //StorySave to_limbo2 = StorySave(bn::fixed_point(944, 736), STORY_TYPE::BEGINNING, camera, text_generator);
         portal_title = "To Limbo 2";
         
-        bn::vector<Portal, 1> portals = {};
-        portals.push_back(Portal(bn::fixed_point(944, 736), camera, PORTAL_TYPE::LIMBO_PORTAL, too::Scene::LIMBO2_LIMBO1, text_generator, portal_text, portal_title, true));
+        bn::vector<Portal*, 1> portals = {};
+        portals.push_back(new Portal(bn::fixed_point(944, 736), camera, PORTAL_TYPE::LIMBO_PORTAL, too::Scene::LIMBO2_LIMBO1, text_generator, portal_text, portal_title, true));
 
         Tooltip explain_attack = Tooltip(bn::fixed_point(256,224),"Press B to attack.", text_generator);
 
@@ -115,20 +115,21 @@ namespace too
                 }
             }
 
-           for(Portal& portal : portals){
-                if(portal.check_trigger(_player->pos())){
+            for(Portal* portal : portals){
+                if(portal->check_trigger(_player->pos())){
                     if(bn::keypad::up_pressed()){
-                        if(portal.get_is_open()){
-                            return portal.goto_scene();
+                        if(portal->get_is_open()){
+                            portal->reset();
+                            return portal->goto_scene();
                         }else{
                             _player->set_listening(true);
-                            portal.dialog();
+                            portal->dialog();
                         }
-                    }else if(!portal.is_in_dialog()){
+                    }else if(!portal->is_in_dialog()){
                         _player->set_listening(false);
                     }
                 }
-                portal.update();
+                portal->update();
             }
             // max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());
             // --counter;

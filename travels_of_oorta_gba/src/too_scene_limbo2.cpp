@@ -88,9 +88,9 @@ namespace too
         portal_title_1 = "To Limbo 1";
         portal_title_2 = "To Limbo 3";
 
-        bn::vector<Portal, 2> portals = {};
-        portals.push_back(Portal(bn::fixed_point(80, 912), camera, PORTAL_TYPE::LIMBO_PORTAL, Scene::LIMBO1_LIMBO2, text_generator, portal_text, portal_title_1, true));
-        portals.push_back(Portal(bn::fixed_point(960, 194), camera, PORTAL_TYPE::LIMBO_PORTAL, Scene::LIMBO3_LIMBO2, text_generator, portal_text, portal_title_2, true));
+        bn::vector<Portal*, 2> portals = {};
+        portals.push_back(new Portal(bn::fixed_point(80, 912), camera, PORTAL_TYPE::LIMBO_PORTAL, Scene::LIMBO1_LIMBO2, text_generator, portal_text, portal_title_1, true));
+        portals.push_back(new Portal(bn::fixed_point(960, 194), camera, PORTAL_TYPE::LIMBO_PORTAL, Scene::LIMBO3_LIMBO2, text_generator, portal_text, portal_title_2, true));
 
         while(true)
         {
@@ -107,20 +107,20 @@ namespace too
                 }
             }
             
-            for(Portal& portal : portals){
-                if(portal.check_trigger(_player->pos())){
+            for(Portal* portal : portals){
+                if(portal->check_trigger(_player->pos())){
                     if(bn::keypad::up_pressed()){
-                        if(portal.get_is_open()){
-                            return portal.goto_scene();
+                        if(portal->get_is_open()){
+                            return portal->goto_scene();
                         }else{
                             _player->set_listening(true);
-                            portal.dialog();
+                            portal->dialog();
                         }
-                    }else if(!portal.is_in_dialog()){
+                    }else if(!portal->is_in_dialog()){
                         _player->set_listening(false);
                     }
                 }
-                portal.update();
+                portal->update();
             }
         
             // max_cpu_usage = bn::max(max_cpu_usage, bn::core::last_cpu_usage());

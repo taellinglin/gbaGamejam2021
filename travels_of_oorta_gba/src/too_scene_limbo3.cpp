@@ -84,9 +84,9 @@ namespace too
 
         //Portals
 
-        bn::vector<Portal, 2> portals = {};
-        portals.push_back(Portal(bn::fixed_point(208, 224), camera, PORTAL_TYPE::LIMBO_PORTAL, Scene::LIMBO2_LIMBO3, text_generator, portal_text, portal_title_limbo2, true));
-        portals.push_back(Portal(bn::fixed_point(816, 368), camera, PORTAL_TYPE::TOWN_PORTAL, Scene::TOWN1_LIMBO3, text_generator, portal_text, portal_title_town, true));
+        bn::vector<Portal*, 2> portals = {};
+        portals.push_back(new Portal(bn::fixed_point(208, 224), camera, PORTAL_TYPE::LIMBO_PORTAL, Scene::LIMBO2_LIMBO3, text_generator, portal_text, portal_title_limbo2, true));
+        portals.push_back(new Portal(bn::fixed_point(816, 368), camera, PORTAL_TYPE::TOWN_PORTAL, Scene::TOWN1_LIMBO3, text_generator, portal_text, portal_title_town, true));
 
         while(true)
         {
@@ -104,20 +104,20 @@ namespace too
                 }
             }
             
-            for(Portal& portal : portals){
-                if(portal.check_trigger(_player->pos())){
+            for(Portal* portal : portals){
+                if(portal->check_trigger(_player->pos())){
                     if(bn::keypad::up_pressed()){
-                        if(portal.get_is_open()){
-                            return portal.goto_scene();
+                        if(portal->get_is_open()){
+                            return portal->goto_scene();
                         }else{
                             _player->set_listening(true);
-                            portal.dialog();
+                            portal->dialog();
                         }
-                    }else if(!portal.is_in_dialog()){
+                    }else if(!portal->is_in_dialog()){
                         _player->set_listening(false);
                     }
                 }
-                portal.update();
+                portal->update();
             }
             
             _player->update_position(map,level);
