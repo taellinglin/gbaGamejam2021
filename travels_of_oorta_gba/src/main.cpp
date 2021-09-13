@@ -42,6 +42,7 @@
 #include "too_scene_limbo2.h"
 #include "too_scene_limbo3.h"
 #include "too_scene_town1.h"
+#include "too_scene_town2.h"
 #include "too_scene_summer1.h"
 #include "too_scene_summer2.h"
 
@@ -51,14 +52,15 @@
 
 #include "bn_sprite_items_cat_sprite.h"
 #include "common_info.h"
-#include "common_variable_8x16_sprite_font.h"
+#include "daemon_font.h"
+#include "daemon_small_font.h"
 
 int main()
 {
     bn::core::init();
     
     too::Scene scene = too::Scene::TITLE;
-    bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
+    bn::sprite_text_generator text_generator(common::daemon_small_font);
     bn::sprite_ptr cat_sprite = bn::sprite_items::cat_sprite.create_sprite(0,0);
     cat_sprite.set_visible(false);
     too::Player player = too::Player(cat_sprite, text_generator);
@@ -104,6 +106,11 @@ int main()
             
             bn::unique_ptr<too::Limbo3> limbo3_town1(new too::Limbo3(player));
             scene = limbo3_town1->execute(bn::fixed_point(816, 368));
+        } 
+        else if(scene == too::Scene::TOWN2_TOWN1){
+            
+            bn::unique_ptr<too::Town2> town2_town1(new too::Town2(player));
+            scene = town2_town1->execute(bn::fixed_point(256,384));
         } 
         else if(scene == too::Scene::HOUSE_SKY){
             too::Sky sky = too::Sky(player);

@@ -25,19 +25,11 @@ namespace too
             Player* _player;
             //Portal Dialogs
             bn::string_view portal_text_limbo[1] = {"This door has closed..."};
-            bn::string_view portal_text_summer[1] = {"You need the Summer Key..."};
-            bn::string_view portal_text_autumn[1] = {"You need the Autumn Key..."};
-            bn::string_view portal_text_winter[1] = {"You need the Winter Key..."};
-            bn::string_view portal_text_spring[1] = {"You need the Spring Key..."};
             bn::string_view portal_text_dusk[1] = {"You need the Dusk Key..."};
             bn::string_view portal_text_dawn[1] = {"You need the Dawn Key..."};
 
             //Portal label
             bn::string_view portal_title_limbo = "To Limbo 3";
-            bn::string_view portal_title_summer = "To Summer 1";
-            bn::string_view portal_title_autumn = "To Autumn 1";
-            bn::string_view portal_title_winter = "To Winter 1";
-            bn::string_view portal_title_spring = "To Sping 1";
             bn::string_view portal_title_dusk = "To Dusk 1";
             bn::string_view portal_title_dawn =  "To Dawn 1";
 

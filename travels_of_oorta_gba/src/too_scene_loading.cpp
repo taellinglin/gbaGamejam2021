@@ -14,7 +14,7 @@
 #include "bn_random.h"
 #include "common_info.h"
 #include "bn_sprite_text_generator.h"
-#include "common_variable_8x16_sprite_font.h"
+#include "daemon_font.h"
 //fe code
 #include "too_scene.h"
 
@@ -37,7 +37,8 @@ namespace too
 {
     void Loading::execute(Scene next_scene)
     {
-        bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
+        bn::sprite_text_generator text_generator(common::daemon_font);
+        
 
         bn::fixed_point init_pos = bn::fixed_point(0, 0);
 
@@ -61,20 +62,10 @@ namespace too
         bn::regular_bg_ptr foreground_bg = bn::regular_bg_items::foreground.create_bg(64, 64);
         foreground_bg.set_priority(0);
         // map.set_horizontal_scale(2);
-        constexpr bn::string_view info_text_lines[] = {
-            "",
-            "",
-            "",
-            "",
-            "Loading...",
-            "",
-            "",
-            "",
-            "",
-        };
+        constexpr bn::string_view info_text_lines = "loading...";
 
-        common::info info("", info_text_lines, text_generator);
-        info.set_show_always(true);
+
+        text_generator.generate(-36, 0, info_text_lines, _text_sprites);
 
 
         // camera
@@ -89,7 +80,7 @@ namespace too
         {
             foreground_bg.set_x(foreground_bg.x() - 1);
             midground_bg.set_x(midground_bg.x() - 0.5);
-            info.update();
+            //info.update();
             cat_sprite1.set_x(cat_sprite1.x() + 1.3);
             action1.update();
             bn::core::update();

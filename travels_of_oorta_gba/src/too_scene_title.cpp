@@ -15,7 +15,8 @@
 #include "bn_sprite_animate_actions.h"
 #include "bn_regular_bg_position_hbe_ptr.h"
 #include "bn_affine_bg_attributes_hbe_ptr.h"
-
+#include "bn_sprite_ptr.h"
+#include "bn_sprite_text_generator.h"
 //too code
 #include "too_scene.h"
 
@@ -37,7 +38,8 @@
 #include "bn_sprite_actions.h"
 #include "common_info.h"
 #include "bn_sprite_text_generator.h"
-#include "common_variable_8x16_sprite_font.h"
+//#include "common_variable_8x16_sprite_font.h"
+#include "daemon_font.h"
 
 namespace too
 {
@@ -53,8 +55,8 @@ namespace too
 
     Scene Title::execute()
     {
-        bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
-
+        bn::sprite_text_generator text_generator(common::daemon_font);
+        bn::vector<bn::sprite_ptr, 32> text_sprites;
         //Render BG0 BG1 BG2 with background, midground, and foreground
         //bn::optional <bn::regular_bg_ptr> background_bg;
         background_bg = bn::regular_bg_items::background.create_bg_optional(64,32);
@@ -77,22 +79,9 @@ namespace too
         bn::sprite_move_loop_action sprite_p3_move_action(sprite_p3, 120,  32, 8);
         bn::sprite_move_loop_action sprite_p4_move_action(sprite_p4, 120,  -32, 8);
 
+        constexpr bn::string_view info_text_lines = "press start";
 
-        constexpr bn::string_view info_text_lines[] = {
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "Press Start",
-        };
-
-        common::info info("", info_text_lines, text_generator);
-        info.set_show_always(true);
-
+        text_generator.generate(-54, 28, info_text_lines, text_sprites);
         bn::sound_items::spin_down.play();
         bn::music_items::ccf.play(0.5);
 
@@ -100,7 +89,6 @@ namespace too
         {
             foreground_bg->set_x(foreground_bg->x() - 1);
             midground_bg->set_x(midground_bg->x() - 0.5);
-            info.update();
 
             // Update the sprite for the logo (play the animated movement)
             sprite_p1_move_action.update();
